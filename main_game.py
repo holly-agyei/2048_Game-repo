@@ -98,4 +98,69 @@ def update_gui():
             )
     root.update()
 
+# Handle player moves
+def handle_key(event):
+    global board
+    if check_gameover(board):
+        return
+    key = event.keysym
+    if key == "Left":
+        move_left(board)
+    elif key == "Right":
+        move_right(board)
+    elif key == "Up":
+        move_up(board)
+    elif key == "Down":
+        move_down(board)
+    else:
+        return
+    add_random(board)
+    update_gui()
+    if check_win(board):
+        result_label.config(text="You Win!", fg="green")
+    elif check_gameover(board):
+        result_label.config(text="Game Over", fg="red")
+
+# Set up the GUI
+root = tk.Tk()
+root.title("2048 Game")
+root.resizable(False, False)
+
+# Colors for the tiles
+colors = {
+    0: "#CDC1B4", 2: "#EEE4DA", 4: "#EDE0C8", 8: "#F2B179",
+    16: "#F59563", 32: "#F67C5F", 64: "#F65E3B", 128: "#EDCF72",
+    256: "#EDCC61", 512: "#EDC850", 1024: "#EDC53F", 2048: "#EDC22E"
+}
+
+# Create the game grid
+cells = [[None for _ in range(4)] for _ in range(4)]
+frame = tk.Frame(root, bg="#BBADA0", bd=10)
+frame.grid(pady=10)
+
+for r in range(4):
+    for c in range(4):
+        cell = tk.Label(
+            frame, text="", width=4, height=2, font=("Helvetica", 24, "bold"),
+            bg="#CDC1B4", fg="#776E65", bd=4, relief="ridge"
+        )
+        cell.grid(row=r, column=c, padx=5, pady=5)
+        cells[r][c] = cell
+
+# Result label
+result_label = tk.Label(root, text="", font=("Helvetica", 18, "bold"), bg="#BBADA0")
+result_label.grid(row=5, column=0, columnspan=4, pady=10)
+
+# Initialize the game
+board = init_board()
+add_random(board)
+add_random(board)
+update_gui()
+
+# Bind key events
+root.bind("<Key>", handle_key)
+
+# Start the GUI loop
+root.mainloop()
+
 
