@@ -56,5 +56,46 @@ def move_up(board):
         compress(column)
         for r in range(4):
             board[r][c] = column[r]
+def move_down(board):
+    for c in range(4):
+        column = [board[r][c] for r in range(4)]
+        column.reverse()
+        compress(column)
+        merge(column)
+        compress(column)
+        column.reverse()
+        for r in range(4):
+            board[r][c] = column[r]
+
+# Check if the game is over
+def check_gameover(board):
+    for r in range(4):
+        for c in range(4):
+            if board[r][c] == 0:
+                return False
+            if c < 3 and board[r][c] == board[r][c + 1]:
+                return False
+            if r < 3 and board[r][c] == board[r + 1][c]:
+                return False
+    return True
+
+# Check if the player has won
+def check_win(board):
+    for row in board:
+        if 2048 in row:
+            return True
+    return False
+
+# Update the GUI with the current board state
+def update_gui():
+    for r in range(4):
+        for c in range(4):
+            value = board[r][c]
+            cells[r][c].config(
+                text=str(value) if value != 0 else "",
+                bg=colors.get(value, "#CDC1B4"),
+                fg="#776E65" if value < 8 else "#F9F6F2",
+            )
+    root.update()
 
 
